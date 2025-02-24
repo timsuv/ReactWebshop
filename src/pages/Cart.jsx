@@ -1,11 +1,28 @@
-import React from "react";
-import { PRODUCTS } from "../products";
 import { ShopContext } from "../context/ShopContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import CartItem from "../models/CartItems";
 import { useNavigate } from "react-router-dom";
+import { fetchProducts } from "../services/Fetch";
+
+
 
 const Cart = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const products = await fetchProducts();
+        if (products) {
+          setProducts(products);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
   const { cartItems, getTotalCartAmount } = useContext(ShopContext);
   const totalamount = getTotalCartAmount();
 
@@ -19,9 +36,9 @@ const Cart = () => {
             <>
               <h1 className="text-3xl text-center p-4">Your cart items</h1>
               <div>
-                {PRODUCTS.map((product) => {
+                {products.map((product, index) => {
                   if (cartItems[product.id] !== 0) {
-                    return <CartItem key={product.id} data={product} />;
+                    return <CartItem  key ={index} data={product} />;
                   }
                   return null;
                 })}
