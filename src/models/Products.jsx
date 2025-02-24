@@ -1,11 +1,29 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
+import {  fetchProducts } from "../services/Fetch";
 
 const Products = (props) => {
-  const { id, productName, price, productImage } = props.data;
   const { addToCart, cartItems } = useContext(ShopContext);
 
   const cartItemAmount = cartItems[id];
+
+  const [products, setProducts] = useState();
+
+  useEffect(()=>{
+    const getData = async () =>{
+      try{
+        const products = await fetchProducts();
+        if(products){
+          setProducts(products);
+        }
+      }
+      catch(error){
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
   return (
     <div className=" flex flex-col items-center justify-center p-4 border-4 rounded-2xl border-gray-300 gap-4 bg-white">
       {
@@ -16,7 +34,7 @@ const Products = (props) => {
         )
       }
       <div className="h-46 flex justify-center items-center">
-        <img className=" w-36 " src={productImage} alt="" />
+        <img className=" w-36 " src={products.name} alt="" />
       </div>
 
       <h2 className="font-bold">{productName}</h2>
