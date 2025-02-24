@@ -1,8 +1,10 @@
 import { fetchProducts } from "../services/Fetch";
 import { ShopContext } from "../context/ShopContext";
 import { useEffect, useState, useContext } from "react";
+
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const { addToCart, cartItems } = useContext(ShopContext);
 
   useEffect(() => {
     const getData = async () => {
@@ -17,8 +19,6 @@ const Home = () => {
     };
     getData();
   }, []);
-
-  const { addToCart, cartItems } = useContext(ShopContext);
 
   return (
     <>

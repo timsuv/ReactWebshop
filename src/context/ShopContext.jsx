@@ -5,7 +5,7 @@ export const ShopContext = createContext(null);
 
 const getDefaultCart = (products) => {
   // Initialize cart with product IDs fetched from the API
-  return products.reduce((cart, product, index) => {
+  return products.reduce((cart, product) => {
     cart[product.productId] = 0; // Use productId instead of index
     return cart;
   }, {});
@@ -20,7 +20,6 @@ const ShopContextProvider = (props) => {
     const loadProducts = async () => {
       const fetchedProducts = await fetchProducts();
       setProducts(fetchedProducts);
-      setCartItems(getDefaultCart(fetchedProducts)); // Initialize cart with fetched product IDs
 
       const savedCart = JSON.parse(localStorage.getItem("cartItems"));
       const initializedCart = savedCart || getDefaultCart(fetchedProducts);
@@ -40,14 +39,14 @@ const ShopContextProvider = (props) => {
   const addToCart = (productId) => {
     setCartItems((prev) => ({
       ...prev,
-      [productId]: prev[productId] + 1,
+      [productId]: (prev[productId] || 0) + 1,
     }));
   };
 
   const removeFromCart = (productId) => {
     setCartItems((prev) => ({
       ...prev,
-      [productId]: prev[productId] - 1,
+      [productId]: (prev[productId] || 0) - 1,
     }));
   };
 
